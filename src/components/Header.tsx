@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HelpCircle as CircleHelp, PartyPopper, Moon, Sun, Menu, X } from 'lucide-react';
+import ConnectWalletButton from './ConnectWalletButton';
 
 const Header = () => {
   const [isDark, setIsDark] = useState(false);
@@ -103,12 +104,7 @@ const Header = () => {
         {/* Connect Wallet Button */}
         <div className="flex items-center">
           <div className="flex items-center gap-2">
-            <button 
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
-              type="button"
-            >
-              Connect Wallet
-            </button>
+            <ConnectWalletButton />
           </div>
         </div>
       </div>
