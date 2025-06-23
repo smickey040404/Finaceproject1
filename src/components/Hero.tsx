@@ -1,6 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useAccount } from 'wagmi';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import TokenCreator from './TokenCreator';
 
-const Hero = () => {
+interface TokenData {
+  name: string;
+  symbol: string;
+  initialSupply: string;
+  maxSupply: string;
+  creator: string;
+  createdAt: string;
+  contractAddress: string;
+}
+
+interface HeroProps {
+  onCreateToken: (tokenData: TokenData) => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onCreateToken }) => {
+  const { isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const [showTokenCreator, setShowTokenCreator] = useState(false);
+
+  const handleCreateToken = (tokenData: TokenData) => {
+    onCreateToken(tokenData);
+    // In a real app, you would save this to a database or blockchain
+    console.log('Token created:', tokenData);
+  };
+
+  const handleButtonClick = () => {
+    if (!isConnected) {
+      if (openConnectModal) {
+        openConnectModal();
+      }
+    } else {
+      setShowTokenCreator(true);
+    }
+  };
+
   return (
     <div className="text-center mt-8 mb-8">
       <h1 
@@ -19,6 +56,7 @@ const Hero = () => {
         Create, launch, and share your own token in a few kliks. No code. No hassle.
       </div>
       <button 
+        onClick={handleButtonClick}
         className="dark:bg-gray-800 dark:text-white dark:border dark:border-gray-600 hover:shadow-lg transition-all duration-200"
         style={{
           width: '100%',
@@ -37,8 +75,16 @@ const Hero = () => {
           cursor: 'pointer'
         }}
       >
-        Connect Wallet
+        {isConnected ? 'Launch Your Token' : 'Connect Wallet'}
       </button>
+
+      {/* Display Token Creator Modal */}
+      {showTokenCreator && (
+        <TokenCreator 
+          onClose={() => setShowTokenCreator(false)} 
+          onCreateToken={handleCreateToken} 
+        />
+      )}
     </div>
   );
 };
